@@ -1,2 +1,5 @@
-/node_modules/
 .idea/
+/examples/angular/node_modules/
+/examples/react/node_modules/
+/examples/native-js/node_modules/
+/examples/node-js/node_modules/

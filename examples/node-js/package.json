@@ -1,0 +1,10 @@
+{
+  "name": "node-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.1",
+    "rubic-sdk": "^2.13.1"
+  }
+}
