@@ -1,5 +1,6 @@
-import SDK, {BLOCKCHAIN_NAME} from 'rubic-sdk';
+# Rubic SDK Native JS example
 
+```
 async function demo() {
     // SDK Setup
 
@@ -66,3 +67,5 @@ async function demo() {
 }
 
 demo();
+
+```

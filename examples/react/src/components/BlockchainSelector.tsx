@@ -31,7 +31,7 @@ const BlockchainSelector = ({ type, onSelectBlockchain, value, loading }: Blockc
         <Box marginRight={ '20px' } sx={{ width: 150 }}>
             <FormLabel htmlFor="select-field-pet">{label}</FormLabel>
             <Select disabled={ loading } value={ value } size="md" defaultValue={ blockchains[0].value } onChange={ selectBlockchain }>
-                { blockchains.map(blockchain => (<Option value={blockchain.value}>{blockchain.label}</Option>))}
+                { blockchains.map(blockchain => (<Option key={blockchain.value} value={blockchain.value}>{blockchain.label}</Option>))}
             </Select>
         </Box>
     );

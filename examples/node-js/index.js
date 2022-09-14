@@ -13,26 +13,31 @@ app.get('/calculate', async (req, res) => {
     const fromAddress = req.query.fromAddress;
     if (!fromAddress) {
         res.send('Wrong from address');
+        return;
     }
 
     const toAddress = req.query.toAddress;
     if (!toAddress) {
         res.send('Wrong to address');
+        return;
     }
 
     const amount = req.query.amount;
     if (!amount) {
         res.send('Wrong from amount');
+        return;
     }
 
     const fromBlockchain = req.query.fromBlockchain;
     if (!fromBlockchain) {
         res.send('Wrong from blockchain');
+        return;
     }
 
     const toBlockchain = req.query.toBlockchain;
     if (!toBlockchain) {
         res.send('Wrong to blockchain');
+        return;
     }
 
     const rubicSdk = await SDK.SDK.createSDK(
@@ -55,8 +60,10 @@ app.get('/calculate', async (req, res) => {
                 String(amount),
                 toAddress
             ));
+            console.log(wrappedTrades);
             const bestTrade = wrappedTrades.filter(el => !el.error)[0];
             res.send(`Min amount out: ${bestTrade.toTokenAmountMin.stringWeiAmount}`);
+            return;
         } else {
             const wrappedTrades = await (rubicSdk.crossChain.calculateTrade(
                 { address: fromAddress, blockchain: fromBlockchain },
@@ -65,9 +72,12 @@ app.get('/calculate', async (req, res) => {
             ));
             const bestTrade = wrappedTrades[0];
             res.send(`Min amount out: ${bestTrade.trade.toTokenAmountMin.toFixed()}`);
+            return;
         }
-    } catch {
+    } catch(err) {
+        console.log(err);
         res.send('Calculation error.');
+        return;
     }
 
     res.send(`from: ${fromAddress}, to: ${toAddress}, amount: ${amount}, fromBlockchain: ${fromBlockchain}, toBlockchain: ${toBlockchain}`);

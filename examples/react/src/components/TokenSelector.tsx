@@ -18,7 +18,7 @@ const TokenSelector = ({ onChange, type, tokens, loading }: TokenSelectorProps) 
         <Box sx={{width: 150}}>
             <FormLabel htmlFor="select-field-pet">{label}</FormLabel>
             <Select onChange={ onChange } disabled={ loading } size="md" defaultValue={tokens[0].address}>
-                {tokens.map(token => (<Option value={token.address}>{token.name}</Option>))}
+                {tokens.map(token => (<Option key={token.address+token.name} value={token.address}>{token.name}</Option>))}
             </Select>
         </Box>
     );
