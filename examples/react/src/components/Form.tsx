@@ -63,6 +63,7 @@ const Form = ({}: FormProps) => {
         if (sdk) {
             setLoading(true);
             try {
+                console.log('Calculating trade, be patient...')
                 if (fromBlockchain === toBlockchain) {
                     const wrappedTrades = await (sdk.instantTrades.calculateTrade(fromToken, String(amount), toToken))
                     const bestTrade = wrappedTrades.filter(el =>  !(el instanceof LifiTrade))[0];
@@ -71,8 +72,15 @@ const Form = ({}: FormProps) => {
                     }
                 } else {
                     const wrappedTrades = await (sdk.crossChain.calculateTrade(fromToken, String(amount), toToken))
-                    const bestTrade = wrappedTrades[0];
-                    setTrade(bestTrade.trade);
+                    console.log('Response:', wrappedTrades)
+                    const validTrades = wrappedTrades.filter(x => x.trade != null)
+                    const bestTrade = validTrades.length > 0 ? validTrades[0] : undefined
+                    if (bestTrade) {
+                        console.log('Best trade found:', bestTrade, bestTrade?.trade?.toTokenAmountMin.toString())
+                        setTrade(bestTrade.trade);
+                    } else {
+                        console.log(`0 valid trades found from ${wrappedTrades.length} in the response`)
+                    }
                 }
             } finally {
                 setLoading(false);
