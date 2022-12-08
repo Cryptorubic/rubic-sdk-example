@@ -14,12 +14,20 @@ interface BlockchainSelectorProps {
 
 const blockchains = [
     {
+        value: BLOCKCHAIN_NAME.AVALANCHE,
+        label: 'Avalanche'
+    },
+    {
         value: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
         label: 'BNB Chain'
     },
     {
         value: BLOCKCHAIN_NAME.POLYGON,
         label: 'Polygon'
+    },
+    {
+        value: BLOCKCHAIN_NAME.FANTOM,
+        label: 'Fantom'
     }
 ];
 
