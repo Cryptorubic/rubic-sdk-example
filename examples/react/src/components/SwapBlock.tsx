@@ -1,16 +1,16 @@
 import {Box, Button, TextField} from "@mui/joy";
-import {CrossChainTrade, InstantTrade, PriceTokenAmount} from "rubic-sdk";
+import {CrossChainTrade, OnChainTrade, PriceTokenAmount} from "rubic-sdk";
 import React, {useState} from "react";
 import useAsyncEffect from "use-async-effect";
 
 interface SwapBlockProps {
-    trade?: InstantTrade | CrossChainTrade | null;
+    trade?: OnChainTrade | CrossChainTrade | null;
     loading: boolean;
     address: string | null;
     onLoadingChange: (loading: boolean) => void;
 }
 
-const handleTrade = async (trade: InstantTrade | CrossChainTrade | undefined | null, isApproved: boolean, loadingHandle: (loading: boolean) => void) => {
+const handleTrade = async (trade: OnChainTrade | CrossChainTrade | undefined | null, isApproved: boolean, loadingHandle: (loading: boolean) => void) => {
     try {
         if (isApproved || trade?.from.address === '0x0000000000000000000000000000000000000000') {
             const result = await trade?.swap({

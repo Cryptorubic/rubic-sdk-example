@@ -1,9 +1,14 @@
-import {BLOCKCHAIN_NAME} from "rubic-sdk";
+import { BLOCKCHAIN_NAME } from "rubic-sdk";
 
 export const tokens = [
     {
         address: '0x0000000000000000000000000000000000000000',
-        name: 'Polygon',
+        name: 'MATIC',
+        blockchain: BLOCKCHAIN_NAME.POLYGON
+    },
+    {
+        address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+        name: 'USDC',
         blockchain: BLOCKCHAIN_NAME.POLYGON
     },
     {

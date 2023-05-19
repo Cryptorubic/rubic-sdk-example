@@ -1,4 +1,4 @@
-import {BLOCKCHAIN_NAME, BlockchainName, CrossChainTrade, InstantTrade, SDK} from "rubic-sdk";
+import {BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE, CrossChainTrade, OnChainTrade, SDK, LifiTrade} from "rubic-sdk";
 import React, {useEffect, useState} from "react";
 import TokenSelector from "./TokenSelector";
 import AmountInput from "./AmountInput";
@@ -11,8 +11,6 @@ import {configuration} from "../constants/sdk-config";
 import LoginBlock from "./LoginBlock";
 import Box from "@mui/joy/Box";
 import SwapBlock from "./SwapBlock";
-import {LifiTrade} from "rubic-sdk/lib/features/instant-trades/dexes/common/lifi/lifi-trade";
-import {BlockchainInfo} from "../constants/blockchain-info";
 
 export interface FormProps {}
 
@@ -64,13 +62,13 @@ const Form = ({}: FormProps) => {
             setLoading(true);
             try {
                 if (fromBlockchain === toBlockchain) {
-                    const wrappedTrades = await (sdk.instantTrades.calculateTrade(fromToken, String(amount), toToken))
+                    const wrappedTrades = await (sdk.onChainManager.calculateTrade(fromToken, String(amount), toToken))
                     const bestTrade = wrappedTrades.filter(el =>  !(el instanceof LifiTrade))[0];
-                    if (bestTrade instanceof InstantTrade) {
+                    if (bestTrade instanceof OnChainTrade) {
                         setTrade(bestTrade);
                     }
                 } else {
-                    const wrappedTrades = await (sdk.crossChain.calculateTrade(fromToken, String(amount), toToken))
+                    const wrappedTrades = await (sdk.crossChainManager.calculateTrade(fromToken, String(amount), toToken))
                     const bestTrade = wrappedTrades[0];
                     setTrade(bestTrade.trade);
                 }
@@ -80,7 +78,7 @@ const Form = ({}: FormProps) => {
         }
     }
 
-    const [trade, setTrade] = useState<CrossChainTrade | InstantTrade | null>(null);
+    const [trade, setTrade] = useState<CrossChainTrade | OnChainTrade | null>(null);
 
     useEffect(() => {
         const filteredTokens = tokens.filter(el => el.blockchain === fromBlockchain);
@@ -105,9 +103,10 @@ const Form = ({}: FormProps) => {
             await sdk?.updateConfiguration({
                 ...configuration,
                 walletProvider: address ? {
-                    core: window.ethereum,
-                    chainId: window.ethereum?.networkVersion,
-                    address
+                    [CHAIN_TYPE.EVM]: {
+                        core: window.ethereum,
+                        address
+                    }
                 } : undefined,
             });
         } finally {
