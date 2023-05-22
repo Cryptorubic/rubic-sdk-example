@@ -10,9 +10,9 @@ interface SwapBlockProps {
     onLoadingChange: (loading: boolean) => void;
 }
 
-const handleTrade = async (trade: OnChainTrade | CrossChainTrade | undefined | null, isApproved: boolean, loadingHandle: (loading: boolean) => void) => {
+const handleTrade = async (trade: OnChainTrade | CrossChainTrade | undefined | null, needApprove: boolean, loadingHandle: (loading: boolean) => void) => {
     try {
-        if (isApproved || trade?.from.address === '0x0000000000000000000000000000000000000000') {
+        if (!needApprove || trade?.from.address === '0x0000000000000000000000000000000000000000') {
             const result = await trade?.swap({
                 onConfirm: (hash: string) => {
                     alert(`Swap transaction ${hash} was sent.`);
@@ -27,8 +27,8 @@ const handleTrade = async (trade: OnChainTrade | CrossChainTrade | undefined | n
             });
             console.log(result);
         }
-    } catch {
-        alert('Swap error.');
+    } catch (err) {
+        alert(err);
     }
 }
 
@@ -43,7 +43,7 @@ const SwapBlock = ({ trade, loading, address, onLoadingChange }: SwapBlockProps)
     useAsyncEffect(async () => {
         const isApproved = await trade?.needApprove() || false;
         setApprove(isApproved);
-    }, []);
+    }, [trade]);
 
 
 
