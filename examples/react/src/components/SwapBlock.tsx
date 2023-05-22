@@ -10,7 +10,7 @@ interface SwapBlockProps {
     onLoadingChange: (loading: boolean) => void;
 }
 
-const handleTrade = async (trade: OnChainTrade | CrossChainTrade | undefined | null, needApprove: boolean, loadingHandle: (loading: boolean) => void) => {
+const handleTrade = async (trade: OnChainTrade | CrossChainTrade | undefined | null, needApprove: boolean, approveHandle: () => void) => {
     try {
         if (!needApprove || trade?.from.address === '0x0000000000000000000000000000000000000000') {
             const result = await trade?.swap({
@@ -25,6 +25,7 @@ const handleTrade = async (trade: OnChainTrade | CrossChainTrade | undefined | n
                     alert(`Approve transaction was sent.`);
                 }
             });
+            approveHandle()
             console.log(result);
         }
     } catch (err) {
@@ -53,7 +54,7 @@ const SwapBlock = ({ trade, loading, address, onLoadingChange }: SwapBlockProps)
     //     <TextField type={ 'text' } disabled={ true } value={ getAmount(trade) } />
     // </Box>
     return address ? <Box marginTop={ '20px' }>
-        <Button fullWidth={ true } disabled={ loading } onClick={ () => handleTrade(trade, needApprove, onLoadingChange) } >
+        <Button fullWidth={ true } disabled={ loading } onClick={ () => handleTrade(trade, needApprove, () => setApprove(false)) } >
             { needApprove ? 'Approve' : 'Swap' }
         </Button>
     </Box> : null;

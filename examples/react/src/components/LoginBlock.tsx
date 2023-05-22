@@ -1,5 +1,5 @@
 import {Box, Button, TextField} from "@mui/joy";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import useAsyncEffect from "use-async-effect";
 
 declare global {
@@ -22,6 +22,16 @@ const LoginBlock = ({ onLogin, address }: LoginBlockProps) => {
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             onLogin(accounts[0])
         } catch {}
+    }, [])
+
+    useEffect(() => {
+
+        const handler = () => window.location.reload()
+
+        window.ethereum.on('accountsChanged', handler)
+
+        return () => window.ethereum.removeListener(handler)
+
     }, [])
 
     const login = async () => {
