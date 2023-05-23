@@ -1,5 +1,5 @@
 import {Box, Button, TextField} from "@mui/joy";
-import {CrossChainTrade, OnChainTrade, PriceTokenAmount} from "rubic-sdk";
+import {CrossChainTrade, EvmWeb3Public, Injector, OnChainTrade, PriceTokenAmount} from "rubic-sdk";
 import React, {useState} from "react";
 import useAsyncEffect from "use-async-effect";
 
@@ -12,19 +12,30 @@ interface SwapBlockProps {
 
 const handleTrade = async (trade: OnChainTrade | CrossChainTrade | undefined | null, needApprove: boolean, approveHandle: () => void) => {
     try {
+
+        if (!trade) return
+        
+        const blockchainAdapter: EvmWeb3Public = Injector.web3PublicService.getWeb3Public(trade.from.blockchain);
+        const gasPrice = await blockchainAdapter.getGasPrice()
+        console.log('gas price', gasPrice)
         if (!needApprove || trade?.from.address === '0x0000000000000000000000000000000000000000') {
             const result = await trade?.swap({
                 onConfirm: (hash: string) => {
                     alert(`Swap transaction ${hash} was sent.`);
-                }
+                },
+                gasPrice
             });
             console.log(result);
         } else {
-            const result = await trade?.approve({
+
+            const tx = {
                 onTransactionHash: () => {
                     alert(`Approve transaction was sent.`);
-                }
-            });
+                },
+                gasPrice
+            }
+            
+            const result = await trade?.approve(tx);
             approveHandle()
             console.log(result);
         }

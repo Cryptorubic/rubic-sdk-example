@@ -1,4 +1,4 @@
-import {BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE, CrossChainTrade, OnChainTrade, SDK, LifiTrade, AlgebraTrade} from "rubic-sdk";
+import {BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE, CrossChainTrade, OnChainTrade, SDK, LifiTrade, AlgebraTrade, OpenOceanTrade} from "rubic-sdk";
 import React, {useEffect, useState} from "react";
 import TokenSelector from "./TokenSelector";
 import AmountInput from "./AmountInput";
@@ -66,8 +66,9 @@ const Form = ({}: FormProps) => {
                     console.log(fromToken, amount, toToken)
                     
                     const wrappedTrades = await (sdk.onChainManager.calculateTrade(fromToken, String(amount), toToken))
-                    const bestTrade = wrappedTrades.filter(el =>  !(el instanceof LifiTrade) && !(el instanceof AlgebraTrade) && !('error' in el))[0];
+                    const bestTrade = wrappedTrades.filter(el =>  !(el instanceof LifiTrade) && !(el instanceof AlgebraTrade) && !(el instanceof OpenOceanTrade) && !('error' in el))[0];
                     if (bestTrade instanceof OnChainTrade) {
+                        console.log(bestTrade)
                         setTrade(bestTrade as OnChainTrade);
                     }
                 } else {
