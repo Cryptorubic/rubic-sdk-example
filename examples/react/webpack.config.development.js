@@ -64,19 +64,33 @@ module.exports = (env, options) =>
                         emitFile: false,
                     },
                 },
+                {
+                    test: /\.m?js$/,
+                    resolve: {
+                      fullySpecified: false
+                    },
+                  },
             ],
         },
         resolve: {
             extensions: [".tsx", ".ts", ".js"],
             fallback: {
+                "fs": false,
+                "constants": false,
+                "querystring": false,
+                "url": false,
                 "path": false,
                 "os": false,
-                "url": require.resolve("url"),
                 "http": require.resolve("http-browserify"),
                 "https": require.resolve("https-browserify"),
+                "zlib": false,
                 "stream": require.resolve("stream-browserify"),
                 "crypto": require.resolve("crypto-browserify")
-            }
+            },
+            alias: {
+                "react/jsx-dev-runtime.js": "react/jsx-dev-runtime",
+                "react/jsx-runtime.js": "react/jsx-runtime",
+              },
         },
         output: {
             filename: "js/[name].bundle.js",

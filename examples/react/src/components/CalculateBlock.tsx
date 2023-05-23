@@ -1,5 +1,5 @@
 import {Box, Button, TextField} from "@mui/joy";
-import {CrossChainTrade, InstantTrade, PriceTokenAmount} from "rubic-sdk";
+import {CrossChainTrade, OnChainTrade, PriceTokenAmount} from "rubic-sdk";
 import React from "react";
 
 interface CalculateBlockProps {
@@ -7,11 +7,11 @@ interface CalculateBlockProps {
     fromToken: any;
     toToken: any;
     onCalculate: (el: any) => void;
-    trade?: InstantTrade | CrossChainTrade | null;
+    trade?: OnChainTrade | CrossChainTrade | null;
     loading: boolean;
 }
 
-const getAmount = (trade: InstantTrade | CrossChainTrade | undefined | null) => {
+const getAmount = (trade: OnChainTrade | CrossChainTrade | undefined | null) => {
     if (!trade) {
         return '';
     }
