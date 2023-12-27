@@ -3,7 +3,7 @@ const app = express();
 const port = 3000;
 
 const SDK = require('rubic-sdk');
-const {BLOCKCHAIN_NAME, InstantTrade} = require("rubic-sdk");
+const {BLOCKCHAIN_NAME} = require("rubic-sdk");
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
@@ -43,11 +43,14 @@ app.get('/calculate', async (req, res) => {
     const rubicSdk = await SDK.SDK.createSDK(
         {
             rpcProviders: {
+                [BLOCKCHAIN_NAME.ETHEREUM]: {
+                    rpcList: ['https://rpc.ankr.com/eth/']
+                },
                 [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-                    mainRpc: 'https://bsc-dataseed.binance.org/'
+                    rpcList: ['https://rpc.ankr.com/bsc']
                 },
                 [BLOCKCHAIN_NAME.POLYGON]: {
-                    mainRpc: 'https://polygon-rpc.com'
+                    rpcList: ['https://polygon-rpc.com']
                 }
             }
         }
@@ -55,23 +58,23 @@ app.get('/calculate', async (req, res) => {
 
     try {
         if (fromBlockchain === toBlockchain) {
-            const wrappedTrades = await (rubicSdk.instantTrades.calculateTrade(
+            const wrappedTrades = await (rubicSdk.onChainManager.calculateTrade(
                 { address: fromAddress, blockchain: fromBlockchain },
                 String(amount),
                 toAddress
             ));
             console.log(wrappedTrades);
             const bestTrade = wrappedTrades.filter(el => !el.error)[0];
-            res.send(`Min amount out: ${bestTrade.toTokenAmountMin.stringWeiAmount}`);
+            res.send(`Min amount out: ${bestTrade.toTokenAmountMin.stringWeiAmount}, provider: ${bestTrade.type}`);
             return;
         } else {
-            const wrappedTrades = await (rubicSdk.crossChain.calculateTrade(
+            const wrappedTrades = await (rubicSdk.crossChainManager.calculateTrade(
                 { address: fromAddress, blockchain: fromBlockchain },
                 String(amount),
                 { address: toAddress, blockchain: toBlockchain }
             ));
             const bestTrade = wrappedTrades[0];
-            res.send(`Min amount out: ${bestTrade.trade.toTokenAmountMin.toFixed()}`);
+            res.send(`Min amount out: ${bestTrade.trade.toTokenAmountMin.toFixed()}, provider: ${bestTrade.tradeType}`);
             return;
         }
     } catch(err) {
